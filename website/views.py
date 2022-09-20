@@ -6,8 +6,8 @@ def index_view(request):
 
 
 def blog_view(request):
-    return render(request,"blog.html")
+    return render(request,"website/blog.html")
 
 
 def contact_view(request):
-    return render(request,"contact.html")
+    return render(request,"website/contact.html")

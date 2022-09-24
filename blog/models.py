@@ -12,3 +12,7 @@ class post2(models.Model):
     created_date=models.DateTimeField(auto_now_add=True)
     update_date=models.DateTimeField(auto_now_add=True)
     #tag image author categorys
+    class Meta:
+        ordering=('-created_date',)
+
+  

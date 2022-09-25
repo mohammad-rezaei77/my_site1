@@ -1,4 +1,5 @@
 import email
+from tabnanny import verbose
 from turtle import update
 from django.db import models
 
@@ -12,3 +13,7 @@ class contact(models.Model):
     message=models.TextField()
     create_date=models.DateTimeField(auto_now_add=True)
     update_date=models.DateTimeField(auto_now=True)
+    class Meta:
+        ordering = ('create_date',)
+        verbose_name = 'message'
+        verbose_name_plural = 'messages'

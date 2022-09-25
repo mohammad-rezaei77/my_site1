@@ -14,5 +14,7 @@ class post2(models.Model):
     #tag image author categorys
     class Meta:
         ordering=('-created_date',)
+        verbose_name='Post'
+        verbose_name_plural='Posts'
 
   

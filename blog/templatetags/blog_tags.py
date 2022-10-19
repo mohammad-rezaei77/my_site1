@@ -1,5 +1,5 @@
 from django import template
-from blog.models import post2
+from blog.models import post2,Comment
 from blog.models import category
 
 
@@ -17,7 +17,6 @@ def snipet(str):
     if len(string)>20:
         string=string[:20]
         for char in string:
-            
             char1=char1+ char+" "
         return char1+" ..."
 
@@ -30,5 +29,10 @@ def category_post():
     for name in categorys:
         cate_dict[name]=posts.filter(category=name).count()
     return {'categorys':cate_dict}
+
+@register.simple_tag(name='comments_count')
+def functions(pid):
+    post = post2.objects.get(pk=pid)
+    return Comment.objects.filter(post=post.id,approved=True).count()
     
 

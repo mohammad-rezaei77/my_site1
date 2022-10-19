@@ -8,8 +8,11 @@ urlpatterns = [
     path('',blog_view,name='blog'),
     path('<int:pid>',single_view,name='single'),
     path('category/<str:cat_name>',blog_view,name='category'),
-    
-    path('test',test,name='test')
+    path ('search/',blog_search,name='search'),
+    path('test',test,name='test'),
+    path ('all_posts/' , blog_all_posts , name = 'all_posts'),
+    path ('insert_post/' , insert_post ,name = 'insert_post'),
+    path ('update_post/' , update_post ,name = 'update_post'),
 
 
     

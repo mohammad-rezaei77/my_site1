@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'website.apps.WebsiteConfig',
     'blog',
-    
+    'accounts',
     'captcha', 
     'django.contrib.humanize',
     'django_summernote', 

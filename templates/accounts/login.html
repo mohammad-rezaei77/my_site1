@@ -118,8 +118,12 @@ body {
   <p>{{msg}}</p>
   <div class="login-page">
     <div class="form">
-      
-      <form  method="post" action="{% url 'accounts:login' %}">{% csrf_token %}
+      <label for="">{{ next }}</label>
+      <form  method="post" action="{% url 'accounts:login' %}">
+        {% csrf_token %}
+        
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+        
         <input type="text" name="username" placeholder="username"/>
         <input type="password" name="password" placeholder="password"/>
         <button type="submit">login</button>

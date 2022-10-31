@@ -1,4 +1,4 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render,get_object_or_404,HttpResponseRedirect,redirect
 from blog.models import post2 , sql_test ,Comment
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from django.utils import timezone
@@ -8,6 +8,9 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from blog.forms import CommentForm
 from django.contrib import messages
+from django.urls import reverse
+from django.conf import settings
+from django.utils.http import url_has_allowed_host_and_scheme
 
 t=timezone.now()
 
@@ -33,23 +36,45 @@ def blog_view(request,cat_name=None):
 
 
 def single_view(request,pid):
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.add_message(request,messages.SUCCESS,"tiket comment successfully") 
+    if not request.user.is_authenticated:
+        if request.method == 'POST':
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.add_message(request,messages.SUCCESS,
+                                            "tiket comment successfully") 
+            else:
+                messages.add_message(request,messages.ERROR,
+                                            "don't comment submit") 
+        post=get_object_or_404(post2,id=pid,status=1,publish_date__lte=t)
 
-        else:
-            messages.add_message(request,messages.ERROR,"don't comment submit")          
-    post=get_object_or_404(post2,id=pid,status=1,publish_date__lte=t)
-    comment=Comment.objects.filter(post=post.id,approved=True)
-
-    post.counted_view+=1       #added counted_view
-    post.save()
-    form = CommentForm()
-    context={'post':post,'comments':comment,'form':form}
-    return render(request,"blog/blog-single.html",context)
-
+        post.counted_view+=1       #added counted_view
+        post.save()
+        
+        if post.login_required == False:
+            comment=Comment.objects.filter(post=post.id,approved=True)
+            form = CommentForm()
+            context={'post':post,'comments':comment,'form':form}
+            return render(request,"blog/blog-single.html",context)
+        else :
+            post=get_object_or_404(post2,id=pid,status=1,publish_date__lte=t)
+            post.counted_view+=1       #added counted_view
+            post.save()
+            comment=Comment.objects.filter(post=post.id,approved=True)
+            form = CommentForm()
+            context={'post':post,
+            'comments':comment,
+            'form':form,
+            'next': request.POST.get('n')}
+            return render(request,"accounts/login.html/",context)
+    else :
+        post=get_object_or_404(post2,id=pid,status=1,publish_date__lte=t)
+        post.counted_view+=1       #added counted_view
+        post.save()
+        comment=Comment.objects.filter(post=post.id,approved=True)
+        form = CommentForm()
+        context={'post':post,'comments':comment,'form':form}
+        return render(request,"blog/blog-single.html",context)
 
 def test(request):
     posts=post2.objects.filter(publish_date__lte=t)

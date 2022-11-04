@@ -118,13 +118,17 @@ body {
   <p>{{msg}}</p>
   <div class="login-page">
     <div class="form">
-      <label for="">{{ next }}</label>
+      {% if 'blog' in request.get_full_path %}
+      <form  method="post" action="{% url 'accounts:login' %}?next={{ request.get_full_path | urlencode }}">
+      
+      {% else %}
       <form  method="post" action="{% url 'accounts:login' %}">
-        {% csrf_token %}
-        
-        <input type="hidden" name="next" value="{{ request.GET.next }}">
+      {% endif %}
+      {% csrf_token %}
+        <input type="hidden" name = 'next' value="{{ request.get_full_path | urlencode }}">
         
         <input type="text" name="username" placeholder="username"/>
+        
         <input type="password" name="password" placeholder="password"/>
         <button type="submit">login</button>
       </form>
